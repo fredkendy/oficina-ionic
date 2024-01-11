@@ -1,13 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>tipo-servicos-listagem</ion-title>
+    <ion-title>Tipos de serviços</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tipo-servicos-listagem</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list>
+    <!-- acessar este link com o parametro id -->
+    <ion-item *ngFor="let tipoServico of tiposServicos" routerLink='/tipo-servicos-add-edit/{{tipoServico.id}}'>
+      <ion-label>
+        <h3>{{ tipoServico.nome }}</h3>
+        <p style="text-align: right;">R$ {{ tipoServico.valor }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
