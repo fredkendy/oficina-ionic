@@ -1,12 +1,14 @@
 //Serviço que oferecerá acesso aos dados que deverão ser consumidos (Provider para toda a aplicação)
 import { Injectable } from "@angular/core";
+import { TipoServico } from "../models/tipo-servico.model";
 
 @Injectable({
     providedIn: 'root',
 })
 export class TipoServicosService {
    
-    private tiposServicos = [
+    //tipificar o objeto array (TipoServico é a interface que implementa id, nome e valor)
+    private tiposServicos: TipoServico[] = [
         {id: 1, nome: 'Alinhamento', valor: 127.40},
         {id: 2, nome: 'Balanceamento', valor: 118.80},
         {id: 3, nome: 'Revisão dos freios', valor: 189.10},
@@ -20,7 +22,7 @@ export class TipoServicosService {
 
     constructor() {}
 
-    getById(id: number) {
+    getById(id: number): TipoServico {
         const tipoServicoSelecionado = this.tiposServicos.filter(
             tipoServico => tipoServico.id === id
         );
@@ -33,12 +35,18 @@ export class TipoServicosService {
     }
 
     //atualiza o elemento com o indice recuperado pelo método getIndexOfELement
-    update(tipoServico: any) {
-        this.tiposServicos[this.getIndexOfElement(tipoServico.id)] = tipoServico;
+    update(tipoServico: TipoServico) {
+        //com base no id, o método saberá se é para atualizar ou inserir
+        if (tipoServico.id < 0) {
+            tipoServico.id = this.tiposServicos[this.tiposServicos.length - 1].id + 1;
+            this.tiposServicos.push(tipoServico);
+        } else {
+            this.tiposServicos[this.getIndexOfElement(tipoServico.id)] = tipoServico;
+        }
     }
 
     //recuperar todos os tipos de serviços (array declarado acima)
-    getAll() {
+    getAll(): TipoServico[] {
         return this.tiposServicos;
     }
 
