@@ -50,4 +50,8 @@ export class TipoServicosService {
         return this.tiposServicos;
     }
 
+    remove(tipoServico: TipoServico) {
+        this.tiposServicos.splice(this.getIndexOfElement(tipoServico.id), 1);
+    }
+
 }
