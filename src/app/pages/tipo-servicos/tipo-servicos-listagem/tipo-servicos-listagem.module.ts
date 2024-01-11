@@ -13,7 +13,7 @@ import { TipoServicosListagemPage } from './tipo-servicos-listagem.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    TipoServicosListagemPageRoutingModule
+    TipoServicosListagemPageRoutingModule,
   ],
   declarations: [TipoServicosListagemPage]
 })
