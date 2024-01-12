@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     //primeira página que será renderizada
     path: '',
-    redirectTo: 'pecas-add-edit',
+    redirectTo: 'pecas-listagem',
     pathMatch: 'full'
   },
   {
@@ -22,8 +22,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/tipo-servicos/tipo-servicos-add-edit/tipo-servicos-add-edit.module').then( m => m.TipoServicosAddEditPageModule)
   },
   {
-    path: 'pecas-add-edit',
+    path: 'pecas-add-edit/:id',
     loadChildren: () => import('./pages/pecas/pecas-add-edit/pecas-add-edit.module').then( m => m.PecasAddEditPageModule)
+  },
+  {
+    path: 'pecas-listagem',
+    loadChildren: () => import('./pages/pecas/pecas-listagem/pecas-listagem.module').then( m => m.PecasListagemPageModule)
   },
 ];
 
