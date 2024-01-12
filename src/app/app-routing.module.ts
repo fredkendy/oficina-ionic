@@ -7,8 +7,9 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
+    //primeira página que será renderizada
     path: '',
-    redirectTo: 'tipo-servicos-listagem',
+    redirectTo: 'pecas-add-edit',
     pathMatch: 'full'
   },
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
     //especificar que haverá um parametro id
     path: 'tipo-servicos-add-edit/:id',
     loadChildren: () => import('./pages/tipo-servicos/tipo-servicos-add-edit/tipo-servicos-add-edit.module').then( m => m.TipoServicosAddEditPageModule)
+  },
+  {
+    path: 'pecas-add-edit',
+    loadChildren: () => import('./pages/pecas/pecas-add-edit/pecas-add-edit.module').then( m => m.PecasAddEditPageModule)
   },
 ];
 
