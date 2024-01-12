@@ -14,6 +14,12 @@
           <p	style="text-align:right">R$	{{peca.valor}}</p>
         </ion-label>
       </ion-item>
+      <!-- opção para remover os registros -->
+      <ion-item-options side="end">
+				<ion-item-option color="danger"	(click)="removerPeca(peca)">
+						<ion-button	color="danger" no-padding><ion-icon	name="trash"></ion-icon>Remover</ion-button>
+				</ion-item-option>
+      </ion-item-options>
     </ion-item-sliding>
   </ion-list>
   <ion-fab vertical="top" horizontal="end" slot="fixed" edge="true">
