@@ -1,4 +1,5 @@
 //Configuração do banco de dados
+export const databaseName: string =	'oficina';
 export const createSchema: string = `
     CREATE TABLE IF NOT EXISTS ordensdeservico (
         ordemdeservicoid TEXT primary key NOT NULL,

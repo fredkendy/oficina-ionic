@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     //primeira página que será renderizada
     path: '',
-    redirectTo: 'pecas-listagem',
+    redirectTo: 'ordensdeservico-listagem',
     pathMatch: 'full'
   },
   {
@@ -28,6 +28,10 @@ const routes: Routes = [
   {
     path: 'pecas-listagem',
     loadChildren: () => import('./pages/pecas/pecas-listagem/pecas-listagem.module').then( m => m.PecasListagemPageModule)
+  },
+  {
+    path: 'ordensdeservico-listagem',
+    loadChildren: () => import('./pages/ordensdeservico/ordensdeservico-listagem/ordensdeservico-listagem.module').then( m => m.OrdensdeservicoListagemPageModule)
   },
 ];
 
