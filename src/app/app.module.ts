@@ -11,11 +11,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { IonicStorageModule } from '@ionic/storage-angular';
 
 import { FormBuilder } from '@angular/forms';
+import { DatabaseService } from './services/database.service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule, IonicStorageModule.forRoot()],
-  providers: [ FormBuilder, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [ FormBuilder, DatabaseService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
