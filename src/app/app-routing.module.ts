@@ -33,6 +33,10 @@ const routes: Routes = [
     path: 'ordensdeservico-listagem',
     loadChildren: () => import('./pages/ordensdeservico/ordensdeservico-listagem/ordensdeservico-listagem.module').then( m => m.OrdensdeservicoListagemPageModule)
   },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
 ];
 
 @NgModule({
