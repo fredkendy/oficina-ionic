@@ -8,7 +8,7 @@ import { OrdemDeServico } from 'src/app/models/ordemdeservico.model';
 import { ClientesService } from 'src/app/services/clientes.service';
 import { OrdensDeServicoService } from 'src/app/services/ordensdeservico.service';
 import { ToastService } from 'src/app/services/toast.service';
-//import { AlertService } from 'src/app/services/alert.service';
+import { AlertService } from 'src/app/services/alert.service';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { DatePipe } from '@angular/common';
 
@@ -27,7 +27,10 @@ export class OrdensDeServicoAddEditPage implements OnInit {
     private datePicker: DatePicker,
     private platform: Platform,
     private route: ActivatedRoute,
-    private ordensDeServicoService: OrdensDeServicoService
+    private ordensDeServicoService: OrdensDeServicoService,
+    private toastService: ToastService,
+    private alertService: AlertService,
+    private router: Router
   ) {}
 
   async ngOnInit() {}
@@ -126,4 +129,38 @@ export class OrdensDeServicoAddEditPage implements OnInit {
       }
     });
   }
+
+  //invocado quando o botão de alterar dados for selecionado
+  iniciarEdicao() {
+    this.modoDeEdicao = true;
+  }
+
+  //invocado quando o botão de cancelar alteração for selecionado
+  cancelarEdicao() {
+    this.osForm.setValue(this.ordemDeServico);
+    this.modoDeEdicao = false;
+  }
+
+  //invocado quando o botão de gravar for selecionado
+  async submit() {
+    // Validação dos dados informados no formulário
+    if (this.osForm.invalid || this.osForm.pending) {
+      await this.alertService.presentAlert('Falha', 'Gravação não foi executada',
+        'Verifique os dados informados para o atendimento', ['Ok']);
+      return;
+    }
+
+    // Invoca o serviço, enviando um objeto com os dados recebidos do template    
+    await this.ordensDeServicoService.update({
+        ordemdeservicoid: this.osForm.controls['ordemdeservicoid'].value,
+        clienteid: this.osForm.controls['clienteid'].value,
+        veiculo: this.osForm.controls['veiculo'].value,
+        dataehoraentrada: this.osForm.controls['dataehoraentrada'].value,
+      });
+
+    // Informar o sucesso da operação e redirecionar para a listagem    
+    this.toastService.presentToast('Gravação bem sucedida', 3000, 'top');
+    this.router.navigateByUrl('ordensdeservico-listagem');
+  }
+
 }
