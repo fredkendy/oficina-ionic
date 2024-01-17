@@ -10,7 +10,8 @@
 <ion-content [fullscreen]="true">
   <ion-list	#slidingList>
     <ion-item-sliding	*ngFor="let	ordemDeServico of ordensDeServico">
-        <ion-item>
+      <!-- vai enviar o id para parametrizar a edição (metodo getById vai lidar com isso) -->
+        <ion-item routerDirection="forward" [routerLink]="['/', 'ordensdeservico-add-edit', ordemDeServico.ordemdeservicoid]">
             <ion-label>
                 <h2>{{ordemDeServico.veiculo}}</h2>
                 <p style="text-align:right">Entrada:	{{ordemDeServico.dataehoraentrada	|	date:	'dd/MM/yyyy'}}</p>

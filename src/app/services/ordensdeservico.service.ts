@@ -26,4 +26,30 @@ export class OrdensDeServicoService {
     }
     return ordensdeservico;
   }
+
+  //recebe id vindo do template para parametrizar a edição
+  public async getById(id: string): Promise<any> {
+    try {
+        const db = await this.databaseService.sqliteConnection.retrieveConnection(databaseName, false);
+        const sql = 'select * from ordensdeservico where ordemdeservicoid = ?';
+        try {
+            db.open();
+            const data = await db.query(sql, [id]);
+            db.close();
+            //@ts-ignore
+            if (data.values.length > 0) {
+                //@ts-ignore
+                const ordemdeservico: OrdemDeServico = data.values[0]; //obtém primeiro item da coleção
+                ordemdeservico.dataehoraentrada = new Date(ordemdeservico.dataehoraentrada); //dataehoraentrada é do tipo date, ent é necessario converter
+                return ordemdeservico;
+            } else {
+                return null;
+            }
+        } catch (e) {
+            return console.error(e);
+        }
+    } catch (e) {
+        return console.error(e);
+    }
+}
 }

@@ -25,43 +25,47 @@ export class OrdensDeServicoAddEditPage implements OnInit {
     private formBuilder: FormBuilder,
     private clientesService: ClientesService,
     private datePicker: DatePicker,
-    private platform: Platform
+    private platform: Platform,
+    private route: ActivatedRoute,
+    private ordensDeServicoService: OrdensDeServicoService
   ) {}
 
   async ngOnInit() {}
 
   async ionViewWillEnter() {
+    //recuperando id com rotas (ActivatedRoute)
+    const	id	=	this.route.snapshot.paramMap.get('id');
+
     const clientes = await this.clientesService.getAll();
     this.clientes = clientes;
 
-    this.ordemDeServico = {
-      ordemdeservicoid: Guid.createEmpty().toString(),
-      clienteid: Guid.createEmpty().toString(),
-      veiculo: '',
-      dataehoraentrada: new Date(),
-    };
-    
-    this.modoDeEdicao = true;
+    const isIdEmptyGUID = id ? Guid.parse(id).isEmpty() : true;
+    const isIdValidGUID = Guid.isGuid(id);
+
+    //verificar se id já existe (se sim, recupera seus dados na base, se nao, cria um novo)
+    if (id && !isIdEmptyGUID && isIdValidGUID) {
+      this.ordemDeServico = await this.ordensDeServicoService.getById(id);
+    } else {
+      this.ordemDeServico = {
+        ordemdeservicoid: Guid.createEmpty().toString(),
+        clienteid: Guid.createEmpty().toString(),
+        veiculo: '',
+        dataehoraentrada: new Date()
+      };
+      this.modoDeEdicao = true;
+    }
+
     this.osForm = this.formBuilder.group({
       ordemdeservicoid: [this.ordemDeServico.ordemdeservicoid],
       clienteid: [this.ordemDeServico.clienteid, Validators.required],
       veiculo: [this.ordemDeServico.veiculo, Validators.required],
-      dataentrada: [
-        {
-          value: this.ordemDeServico.dataehoraentrada.toLocaleDateString(),
-          disabled: !this.modoDeEdicao,
-        },
-        Validators.required,
-      ],
-      horaentrada: [
-        {
-          value: this.ordemDeServico.dataehoraentrada.toLocaleTimeString(),
-          disabled: !this.modoDeEdicao,
-        },
-        Validators.required,
-      ],
-      dataehoraentrada: [this.ordemDeServico.dataehoraentrada],
+      dataentrada: [{ value: this.ordemDeServico.dataehoraentrada.toLocaleDateString(), disabled: !this.modoDeEdicao }, Validators.required],
+      horaentrada: [{ value: this.ordemDeServico.dataehoraentrada.toLocaleTimeString(), disabled: !this.modoDeEdicao }, Validators.required],
+      dataehoraentrada: [this.ordemDeServico.dataehoraentrada]
     });
+
+    this.ordemDeServico = this.osForm.value;
+
   }
 
   selecionarDataEntrada() {
