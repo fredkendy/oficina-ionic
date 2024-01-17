@@ -5,7 +5,7 @@ import {
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
 import { Capacitor } from '@capacitor/core';
-import { createSchema } from './database.statements';
+import { createClientesTable, createOrdensDeServicoTable } from './database.statements';
 import { Guid } from 'guid-typescript';
 
 @Injectable({
@@ -68,34 +68,59 @@ export class DatabaseService {
   //recebe SQLiteDBConnection na variável db, abre conexao, executa instrução, fecha conexao com a base e retorna resultado
   private async createSchema(db: SQLiteDBConnection): Promise<void> {
     await db.open();
-    let createSchemma: any = await db.execute(createSchema);
+    //constante do database.statements.ts
+    let createClienteSchema: any = await db.execute(createClientesTable);
+    let createOOSchema: any = await db.execute(createOrdensDeServicoTable);
+    
     await this.populateDatabase(db);
     await db.close();
-    if (createSchemma.changes.changes < 0) {
-      return Promise.reject(new Error('Erro	na	criação	das	tabelas'));
+    console.log("Fechou conexão");
+    return Promise.resolve();
+  }
+
+  //Invoca os 2 métodos que populam as respectivas tabelas
+  private async populateDatabase(db: SQLiteDBConnection): Promise<void> {
+    const clienteID = Guid.create().toString();
+
+    await this.populateClientes(db, clienteID);
+    await this.populateOrdensDeServico(db, clienteID);
+
+    return Promise.resolve();
+}
+
+  //consulta que retorna qtd de registros que tem na tabela. se n tiver registros, insere os iniciais
+  private async populateOrdensDeServico(db: SQLiteDBConnection, clienteID: String): Promise<void> {
+    let returnQuery = await db.query("select COUNT(ordemdeservicoid) as qtdeOS from ordensdeservico;");
+
+    //@ts-ignore
+    if (returnQuery.values[0].qtdeOS === 0) {
+      let sqlcmd: string = "INSERT INTO ordensdeservico (ordemdeservicoid, clienteid, veiculo, dataehoraentrada, dataehoratermino) VALUES (?,?,?,?,?)";
+      let values: Array<any> = [Guid.create().toString(), clienteID, 'ABC-1235', Date.now(), null];
+
+      let returnInsert = await db.run(sqlcmd, values);
+      //@ts-ignore
+      if (returnInsert.changes < 0) {
+          return Promise.reject(new Error("Erro na inserção da ordem de serviço"));
+      }
     }
     return Promise.resolve();
   }
 
-  //consulta que retorna qtd de registros que tem na tabela. se n tiver registros, insere os iniciais
-  private async populateDatabase(db: SQLiteDBConnection): Promise<void> {
-    let returnQuery = await db.query('select	COUNT(ordemdeservicoid)	as	qtdeOS	from	ordensdeservico;');
+  private async populateClientes(db: SQLiteDBConnection, clienteID: String): Promise<void> {
+    let returnQuery = await db.query("select COUNT(clienteid) as qtdeClientes from clientes;");
+
     //@ts-ignore
-    if (returnQuery.values[0].qtdeOS === 0) {
-      let sqlcmd: string = 'INSERT	INTO	ordensdeservico	(ordemdeservicoid,	clienteid,	veiculo,	dataehoraentrada,	dataehoratermino)	VALUES	(?,?,?,?,?)';
-      let values: Array<any> = [
-        Guid.create().toString(),
-        Guid.create().toString(),
-        'ABC-1235',
-        Date.now(),
-        null,
-      ];
+    if (returnQuery.values[0].qtdeClientes === 0) {
+      let sqlcmd: string = "INSERT INTO clientes (clienteid, nome, email, telefone, renda) VALUES (?,?,?,?,?)";
+      let values: Array<any> = [clienteID, 'Ambrózio', 'ambrozio@casadocodigo.com.br', '91234-5668', 123];
+
       let returnInsert = await db.run(sqlcmd, values);
       //@ts-ignore
       if (returnInsert.changes < 0) {
-        return Promise.reject(new Error('Erro	na	inserção	da	ordem	de	serviço'));
+        return Promise.reject(new Error("Erro na inserção da clientes"));
       }
     }
+
     return Promise.resolve();
   }
 }
