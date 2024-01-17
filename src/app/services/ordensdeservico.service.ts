@@ -82,6 +82,19 @@ export class OrdensDeServicoService {
     } catch (e) {
         console.error(e);
     }
+  }
+
+  //no generics informamos 2 tipos de retorno (booleano: sucesso | void: exceção)
+  async removeById(id: string): Promise<boolean | void> {
+    try {
+      const db = await this.databaseService.sqliteConnection.retrieveConnection(databaseName, false);
+      db.open();
+      await db.run('DELETE FROM ordensdeservico WHERE ordemdeservicoid = ?', [id]);
+      db.close();
+      return true;
+    } catch (e) {
+      console.error(e);
+    }
 }
 
 }
